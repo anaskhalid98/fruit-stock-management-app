@@ -7,7 +7,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {useHistory} from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 import {localAuthenticationAction} from "../../../redux/actions/authentication.action";
 import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
 import { connect } from "react-redux";
@@ -56,56 +56,67 @@ export function SignIn(props) {
 		});
 	};
 
-	return (
-		<Container component="main" maxWidth="xs">
-			<CssBaseline/>
-			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>
-					<LockOutlinedIcon/>
-				</Avatar>
-				<Typography component="h1" variant="h5">
-					Sign in
-				</Typography>
-				<form className={classes.form} onClick={onSubmit} noValidate>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						id="username"
-						label="Nom d'utilisateur"
-						name="username"
-						autoComplete="uname"
-						autoFocus
-						value={state.username}
-						onChange={handleChange("username")}
-					/>
-					<TextField
-						variant="outlined"
-						margin="normal"
-						required
-						fullWidth
-						name="password"
-						label="Mot de pass"
-						type="password"
-						id="password"
-						autoComplete="current-password"
-						value={state.password}
-						onChange={handleChange("password")}
-					/>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.submit}
-					>
-						Connexion
-					</Button>
-				</form>
-			</div>
-		</Container>
-	);
+	if (props.authenticated ) {
+		return (
+			<Redirect
+				to={{
+					pathname: "/Home",
+					state: { from: props.location },
+				}}
+			/>
+		);
+	} else {
+		return (
+			<Container component="main" maxWidth="xs">
+				<CssBaseline/>
+				<div className={classes.paper}>
+					<Avatar className={classes.avatar}>
+						<LockOutlinedIcon/>
+					</Avatar>
+					<Typography component="h1" variant="h5">
+						Sign in
+					</Typography>
+					<form className={classes.form} noValidate>
+						<TextField
+							variant="outlined"
+							margin="normal"
+							required
+							fullWidth
+							id="username"
+							label="Nom d'utilisateur"
+							name="username"
+							autoComplete="uname"
+							value={state.username}
+							onChange={handleChange("username")}
+						/>
+						<TextField
+							variant="outlined"
+							margin="normal"
+							required
+							fullWidth
+							name="password"
+							label="Mot de pass"
+							type="password"
+							id="password"
+							autoComplete="current-password"
+							value={state.password}
+							onChange={handleChange("password")}
+						/>
+						<Button
+							type="submit"
+							fullWidth
+							variant="contained"
+							color="primary"
+							className={classes.submit}
+							onClick={onSubmit}
+						>
+							Connexion
+						</Button>
+					</form>
+				</div>
+			</Container>
+		);
+	}
 }
 
 const maStateToProps = (state) => state.authentication;

@@ -10,7 +10,9 @@ export const localAuthenticationAction = ({state, history}) => async (
 	let fruitmark_auth = undefined;
 	return login(state)
 		.then((response) => {
-			fruitmark_auth = response;
+			console.log("ejakeaneiatgyuhiojk");
+			fruitmark_auth = response.data.accessToken;
+			console.log(response.data);
 			localStorage.setItem(ACCESS_TOKEN, fruitmark_auth);
 			const decode = jwt_decode(fruitmark_auth);
 			dispatch({
@@ -29,31 +31,7 @@ export const localAuthenticationAction = ({state, history}) => async (
 		});
 };
 
-export const authenticationFromProviderAction = (arenation_auth) => async (
-	dispatch
-) => {
-	const {token} = arenation_auth;
-	const {history} = arenation_auth;
-	if (token) {
-		localStorage.setItem(ACCESS_TOKEN, token);
-		const decode = jwt_decode(token);
-		dispatch({
-			type: "SET_CURRENT_USER",
-			payload: decode,
-		});
-		if (decode?.status === "VERIFIED") {
-			history.push("/Home");
-		} else {
-			history.push("/Register");
-		}
-	} else {
-		localStorage.removeItem(ACCESS_TOKEN);
-		dispatch({
-			type: "LOGOUT",
-		});
-		history.push("/Login");
-	}
-};
+
 
 export const authenticateUser = (token) => (dispatch) => {
 	if (token) {
