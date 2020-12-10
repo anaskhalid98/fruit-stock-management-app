@@ -7,6 +7,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {useHistory} from "react-router-dom";
+import {localAuthenticationAction} from "../../../redux/actions/authentication.action";
+import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
+import { connect } from "react-redux";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,8 +37,24 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function SignIn() {
+export function SignIn(props) {
+	let history = useHistory();
 	const classes = useStyles();
+	const [state, setState] = React.useState({
+		username: "",
+		password: "",
+	});
+
+	const handleChange = (name) => (event) => {
+		setState({...state, [name]: event.target.value});
+	};
+
+	const onSubmit = (event) => {
+		event.preventDefault();
+		props.localAuthenticationAction({state, history}).catch((error) => {
+			props.fireError(error);
+		});
+	};
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -45,7 +66,7 @@ export default function SignIn() {
 				<Typography component="h1" variant="h5">
 					Sign in
 				</Typography>
-				<form className={classes.form} noValidate>
+				<form className={classes.form} onClick={onSubmit} noValidate>
 					<TextField
 						variant="outlined"
 						margin="normal"
@@ -56,6 +77,8 @@ export default function SignIn() {
 						name="username"
 						autoComplete="uname"
 						autoFocus
+						value={state.username}
+						onChange={handleChange("username")}
 					/>
 					<TextField
 						variant="outlined"
@@ -67,6 +90,8 @@ export default function SignIn() {
 						type="password"
 						id="password"
 						autoComplete="current-password"
+						value={state.password}
+						onChange={handleChange("password")}
 					/>
 					<Button
 						type="submit"
@@ -77,17 +102,15 @@ export default function SignIn() {
 					>
 						Connexion
 					</Button>
-					<Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="primary"
-						className={classes.createAccount}
-					>
-						Créer un compte
-					</Button>
 				</form>
 			</div>
 		</Container>
 	);
 }
+
+const maStateToProps = (state) => state.authentication;
+export default connect(maStateToProps, {
+	localAuthenticationAction,
+	fireSuccess,
+	fireError,
+})(SignIn);
