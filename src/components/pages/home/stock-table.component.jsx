@@ -14,6 +14,10 @@ import StockTableRow from "./stock-table-row.component";
 import TablePagination from "@material-ui/core/TablePagination";
 import Alert from "@material-ui/lab/Alert";
 import {getUserStock} from "../../../service/authentication.service";
+import {connect} from "react-redux";
+import {localAuthenticationAction} from "../../../redux/actions/authentication.action";
+import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
+import {SignIn} from "../authentication/signin.component";
 
 
 function createData(name, calories, fat, carbs, protein, price) {
@@ -40,7 +44,7 @@ const rows = [
 	createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
 ];
 
-export default function StockTable() {
+export  function StockTable(props) {
 
 	const [stockData, setStockData] = React.useState([]);
 	const [isLoading, setIsLoading] = React.useState(true);
@@ -52,8 +56,18 @@ export default function StockTable() {
 				setStockData(response)
 
 			})
-	})
+			.catch(error=>{
+				props.fireError("Un erreur lors de chargement des données")
+			})
+	},[])
 
+	if(isLoading){
+		return (
+			<div>
+				Loading................
+			</div>
+		)
+	}
 
 	return (
 		<Container>
@@ -94,3 +108,8 @@ export default function StockTable() {
 		</Container>
 	);
 }
+const mapStateToProps = (state) => state.alert;
+export default connect(mapStateToProps, {
+	fireSuccess,
+	fireError,
+})(StockTable);
