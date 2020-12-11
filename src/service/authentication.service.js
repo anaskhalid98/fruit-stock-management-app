@@ -16,3 +16,10 @@ export function signUp(signUpRequest) {
 		data: JSON.stringify(signUpRequest)
 	});
 }
+
+export function getUserStock() {
+	return request({
+		url: API_BASE_URL + "/api/Stock",
+		method: "GET",
+	});
+}

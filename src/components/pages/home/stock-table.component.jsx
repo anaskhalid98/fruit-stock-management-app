@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import StockTableRow from "./stock-table-row.component";
 import TablePagination from "@material-ui/core/TablePagination";
 import Alert from "@material-ui/lab/Alert";
+import {getUserStock} from "../../../service/authentication.service";
 
 
 function createData(name, calories, fat, carbs, protein, price) {
@@ -40,6 +41,20 @@ const rows = [
 ];
 
 export default function StockTable() {
+
+	const [stockData, setStockData] = React.useState([]);
+	const [isLoading, setIsLoading] = React.useState(true);
+
+	React.useEffect(()=>{
+		getUserStock()
+			.then(response=>{
+				setIsLoading(false);
+				setStockData(response)
+
+			})
+	})
+
+
 	return (
 		<Container>
 			<PageTitle
@@ -75,11 +90,6 @@ export default function StockTable() {
 						))}
 					</TableBody>
 				</Table>
-				<TablePagination
-					rowsPerPageOptions={[10, 25, 50]}
-					component="div"
-
-				/>
 			</TableContainer>
 		</Container>
 	);

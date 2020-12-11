@@ -6,7 +6,7 @@ import Home from "./components/pages/home/home.component";
 import {ACCESS_TOKEN} from "./constants";
 import {connect} from "react-redux";
 import jwt_decode from "jwt-decode";
-import {authenticateUser} from "./redux/actions/authentication.action";
+import {authenticateUserAction} from "./redux/actions/authentication.action";
 
 const PrivateRout = ({component: Component, props, ...rest}) => {
 	const fruitmark_auth = localStorage.getItem(ACCESS_TOKEN);
@@ -50,4 +50,4 @@ function Routes(props) {
 }
 
 const mapStateToProps = (state) => state.authentication;
-export default connect(mapStateToProps, {authenticateUser})(Routes);
+export default connect(mapStateToProps, {authenticateUser: authenticateUserAction})(Routes);

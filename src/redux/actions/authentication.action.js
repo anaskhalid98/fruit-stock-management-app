@@ -50,7 +50,7 @@ export const signUpAction = ({signupData, history}) => async (
 
 
 
-export const authenticateUser = (token) => (dispatch) => {
+export const authenticateUserAction = (token) => (dispatch) => {
 	if (token) {
 		try {
 			const decode = jwt_decode(token);
@@ -67,9 +67,11 @@ export const authenticateUser = (token) => (dispatch) => {
 	}
 };
 
-export const logout = () => (dispatch) => {
+export const logoutAction = (history) => (dispatch) => {
 	localStorage.removeItem(ACCESS_TOKEN);
+	history.push("/SignIn");
 	dispatch({
 		type: "LOGOUT",
 	});
+
 };
