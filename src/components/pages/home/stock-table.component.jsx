@@ -11,72 +11,39 @@ import Paper from '@material-ui/core/Paper';
 import PageTitle from "../../utils/page-title/page-title.component";
 import Container from "@material-ui/core/Container";
 import StockTableRow from "./stock-table-row.component";
-import TablePagination from "@material-ui/core/TablePagination";
 import Alert from "@material-ui/lab/Alert";
 import {getUserStock} from "../../../service/authentication.service";
 import {connect} from "react-redux";
-import {localAuthenticationAction} from "../../../redux/actions/authentication.action";
 import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
-import {SignIn} from "../authentication/signin.component";
+import {setStockAction} from "../../../redux/actions/stock.action";
+import StockTableRowSkeleton from "../../utils/skeleton/stock-table-row-skeleton.component";
 
-
-function createData(name, calories, fat, carbs, protein, price) {
-	return {
-		name,
-		calories,
-		fat,
-		carbs,
-		protein,
-		price,
-		history: [
-			{date: '2020-01-05', customerId: '11091700', amount: 3},
-			{date: '2020-01-02', customerId: 'Anonymous', amount: 1},
-		],
-	};
-}
-
-
-const rows = [
-	createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-	createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-	createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-	createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-	createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-];
-
-export  function StockTable(props) {
-
-	const [stockData, setStockData] = React.useState([]);
+export function StockTable(props) {
 	const [isLoading, setIsLoading] = React.useState(true);
 
-	React.useEffect(()=>{
+	React.useEffect(() => {
 		getUserStock()
-			.then(response=>{
+			.then(response => {
 				setIsLoading(false);
-				setStockData(response)
+				props.setStockAction(response.data);
+
 
 			})
-			.catch(error=>{
+			.catch(error => {
 				props.fireError("Un erreur lors de chargement des données")
 			})
-	},[])
+	}, [])
 
-	if(isLoading){
-		return (
-			<div>
-				Loading................
-			</div>
-		)
-	}
+
 
 	return (
 		<Container>
 			<PageTitle
 				titleHeading="Stock des fruits par ville"
 			/>
-			<TableContainer  component={Paper}>
+			<TableContainer component={Paper}>
 				<Alert severity="info">
-					Ce table montre le stock des fruits par ville
+					Ce table affiche le stock des fruits par ville
 				</Alert>
 				<Table aria-label="collapsible table">
 					<TableHead>
@@ -99,17 +66,26 @@ export  function StockTable(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows.map((row) => (
-							<StockTableRow key={row.name} row={row}/>
-						))}
+						{
+							isLoading
+								?
+								<StockTableRowSkeleton/>
+								:
+								props.stock && props.stock.map((row) => (
+									<StockTableRow key={row._id} row={row}/>
+								))
+						}
+
 					</TableBody>
 				</Table>
 			</TableContainer>
 		</Container>
 	);
 }
-const mapStateToProps = (state) => state.alert;
+
+const mapStateToProps = (state) => state.stock;
 export default connect(mapStateToProps, {
+	setStockAction,
 	fireSuccess,
 	fireError,
 })(StockTable);

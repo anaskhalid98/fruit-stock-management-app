@@ -26,6 +26,14 @@ export default function StockTableRow(props) {
 	const [open, setOpen] = React.useState(false);
 	const classes = useRowStyles();
 
+	const calculateTotalStock = (goods) =>{
+		let total = 0;
+		for(let good of goods){
+			total += good.total_in_stock;
+		}
+		return total
+	}
+
 	return (
 		<React.Fragment>
 			<TableRow className={classes.root}>
@@ -36,12 +44,12 @@ export default function StockTableRow(props) {
 				</TableCell>
 				<TableCell component="th" scope="row">
 					<Typography>
-						{row.name}
+						{row.city_name}
 					</Typography>
 				</TableCell>
 				<TableCell align="left">
 					<Typography>
-						{row.calories}
+						{calculateTotalStock(row.goods)}
 					</Typography>
 				</TableCell>
 			</TableRow>
@@ -70,12 +78,12 @@ export default function StockTableRow(props) {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{row.history.map((historyRow) => (
-										<TableRow key={historyRow.date}>
+									{row.goods.map((goodRow,index) => (
+										<TableRow key={index}>
 											<TableCell component="th" scope="row">
-												{historyRow.date}
+												{goodRow.name}
 											</TableCell>
-											<TableCell>{historyRow.customerId}</TableCell>
+											<TableCell>{goodRow.total_in_stock}</TableCell>
 										</TableRow>
 									))}
 								</TableBody>
@@ -90,18 +98,12 @@ export default function StockTableRow(props) {
 
 StockTableRow.propTypes = {
 	row: PropTypes.shape({
-		calories: PropTypes.number.isRequired,
-		carbs: PropTypes.number.isRequired,
-		fat: PropTypes.number.isRequired,
-		history: PropTypes.arrayOf(
+		city_name: PropTypes.string,
+		goods: PropTypes.arrayOf(
 			PropTypes.shape({
-				amount: PropTypes.number.isRequired,
-				customerId: PropTypes.string.isRequired,
-				date: PropTypes.string.isRequired,
+				name: PropTypes.string,
+				total_in_stock: PropTypes.number
 			}),
-		).isRequired,
-		name: PropTypes.string.isRequired,
-		price: PropTypes.number.isRequired,
-		protein: PropTypes.number.isRequired,
-	}).isRequired,
+		)
+	}),
 };
