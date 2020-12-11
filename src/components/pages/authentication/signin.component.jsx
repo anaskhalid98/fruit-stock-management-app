@@ -11,6 +11,8 @@ import {Redirect, useHistory} from "react-router-dom";
 import {localAuthenticationAction} from "../../../redux/actions/authentication.action";
 import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
 import { connect } from "react-redux";
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
 
 
 
@@ -40,18 +42,22 @@ const useStyles = makeStyles((theme) => ({
 export function SignIn(props) {
 	let history = useHistory();
 	const classes = useStyles();
-	const [state, setState] = React.useState({
+	const [signinData, setSigninData] = React.useState({
 		username: "",
 		password: "",
 	});
 
 	const handleChange = (name) => (event) => {
-		setState({...state, [name]: event.target.value});
+		setSigninData({...signinData, [name]: event.target.value});
 	};
 
 	const onSubmit = (event) => {
 		event.preventDefault();
-		props.localAuthenticationAction({state, history}).catch((error) => {
+		props.localAuthenticationAction({signinData, history})
+			.then(() =>{
+				props.fireSuccess("Bienvenue à votre espace gestion de stock")
+			})
+			.catch((error) => {
 			props.fireError(error);
 		});
 	};
@@ -86,7 +92,7 @@ export function SignIn(props) {
 							label="Nom d'utilisateur"
 							name="username"
 							autoComplete="uname"
-							value={state.username}
+							value={signinData.username}
 							onChange={handleChange("username")}
 						/>
 						<TextField
@@ -99,7 +105,7 @@ export function SignIn(props) {
 							type="password"
 							id="password"
 							autoComplete="current-password"
-							value={state.password}
+							value={signinData.password}
 							onChange={handleChange("password")}
 						/>
 						<Button
@@ -112,6 +118,13 @@ export function SignIn(props) {
 						>
 							Connexion
 						</Button>
+						<Grid container justify="flex-end">
+							<Grid item>
+								<Link href="/*" variant="body2">
+									Créer un compte
+								</Link>
+							</Grid>
+						</Grid>
 					</form>
 				</div>
 			</Container>
@@ -119,8 +132,8 @@ export function SignIn(props) {
 	}
 }
 
-const maStateToProps = (state) => state.authentication;
-export default connect(maStateToProps, {
+const mapStateToProps = (state) => state.authentication;
+export default connect(mapStateToProps, {
 	localAuthenticationAction,
 	fireSuccess,
 	fireError,

@@ -1,18 +1,16 @@
 import {ACCESS_TOKEN} from "../../constants";
 import jwt_decode from "jwt-decode";
-import {login} from "../../service/authentication.service";
+import {login, signUp} from "../../service/authentication.service";
 
 
 
-export const localAuthenticationAction = ({state, history}) => async (
+export const localAuthenticationAction = ({signinData, history}) => async (
 	dispatch
 ) => {
 	let fruitmark_auth = undefined;
-	return login(state)
+	return login(signinData)
 		.then((response) => {
-			console.log("ejakeaneiatgyuhiojk");
 			fruitmark_auth = response.data.accessToken;
-			console.log(response.data);
 			localStorage.setItem(ACCESS_TOKEN, fruitmark_auth);
 			const decode = jwt_decode(fruitmark_auth);
 			dispatch({
@@ -26,6 +24,25 @@ export const localAuthenticationAction = ({state, history}) => async (
 			localStorage.removeItem(ACCESS_TOKEN);
 			dispatch({
 				type: "LOGOUT",
+			});
+			return Promise.reject(error);
+		});
+};
+
+export const signUpAction = ({signupData, history}) => async (
+	dispatch
+) => {
+	return signUp(signupData)
+		.then((response) => {
+			dispatch({
+				type: "SHOW_SIGNUP_SUCCESS",
+			});
+			history.push("/SignIn");
+			return Promise.resolve(response);
+		})
+		.catch((error) => {
+			dispatch({
+				type: "SHOW_SIGNUP_FAILED",
 			});
 			return Promise.reject(error);
 		});

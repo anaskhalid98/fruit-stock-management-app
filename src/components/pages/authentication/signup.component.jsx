@@ -9,6 +9,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {connect} from "react-redux";
+import {signUpAction} from "../../../redux/actions/authentication.action";
+import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
+import {useHistory} from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,11 +35,31 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignUp() {
+export function SignUp(props) {
+	let history = useHistory();
 	const classes = useStyles();
+	const [signupData, setSignupData] = React.useState({
+		username: "",
+		password: "",
+		email: ""
+	});
 
+	const handleChange = (name) => (event) => {
+		setSignupData({...signupData, [name]: event.target.value});
+	};
 
-
+	const onSubmit = (event) => {
+		event.preventDefault();
+		console.log("Data:", signupData);
+		console.dir("state:",props.authentication);
+		props.signUpAction({signupData, history})
+			.then(response => {
+				props.fireSuccess("Vous êtes inscrit avec succès")
+			})
+			.catch(error => {
+				props.fireError("Echec de l'inscription");
+			});
+	};
 	return (
 		<Container component="main" maxWidth="xs">
 			<CssBaseline/>
@@ -58,6 +82,8 @@ export default function SignUp() {
 								label="Prenom"
 								autoFocus
 								autoComplete="fname"
+								value={signupData.username}
+								onChange={handleChange("username")}
 
 							/>
 						</Grid>
@@ -81,6 +107,8 @@ export default function SignUp() {
 								label="Adresse mail"
 								name="email"
 								autoComplete="email"
+								value={signupData.email}
+								onChange={handleChange("email")}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -93,6 +121,8 @@ export default function SignUp() {
 								type="password"
 								id="motDePass"
 								autoComplete="current-password"
+								value={signupData.password}
+								onChange={handleChange("password")}
 							/>
 						</Grid>
 					</Grid>
@@ -102,6 +132,7 @@ export default function SignUp() {
 						variant="contained"
 						color="primary"
 						className={classes.submit}
+						onClick={onSubmit}
 					>
 						S’inscrire
 					</Button>
@@ -117,3 +148,10 @@ export default function SignUp() {
 		</Container>
 	);
 }
+
+const mapStateToProps = (state) => state.authentication;
+export default connect(mapStateToProps, {
+	signUpAction,
+	fireSuccess,
+	fireError,
+})(SignUp);
