@@ -18,6 +18,7 @@ import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
 import {setStockAction} from "../../../redux/actions/stock.action";
 import StockTableRowSkeleton from "../../utils/skeleton/stock-table-row-skeleton.component";
 
+
 export function StockTable(props) {
 	const [isLoading, setIsLoading] = React.useState(true);
 
@@ -33,7 +34,6 @@ export function StockTable(props) {
 				props.fireError("Un erreur lors de chargement des données")
 			})
 	}, [])
-
 
 
 	return (
