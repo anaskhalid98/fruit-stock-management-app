@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {setStockAction} from "../../../redux/actions/stock.action";
 import {fireError, fireSuccess} from "../../../redux/actions/alerts.action";
+import {TransferMerchandiseService} from "../../../service/stock.service";
 
 export function TransferFruitsDialog(props) {
 	let stock = props.stock;
@@ -22,8 +23,8 @@ export function TransferFruitsDialog(props) {
 	const [transferRequest, setTransferRequest] = React.useState({
 		departure: "",
 		arrival: "",
-		merchandise: {},
-		number: ""
+		merchandise: "",
+		number: null
 	});
 
 	const handleChange = (name) => (event) => {
@@ -58,7 +59,7 @@ export function TransferFruitsDialog(props) {
 		if (isSameCity(request.departure, request.arrival)) {
 			props.fireError("Vous avez choisi la même ville en départ et en arrivée");
 			return false;
-		} else if (isOutOfStock(request.merchandise.name, request.number, stock, request.departure)) {
+		} else if (isOutOfStock(request.merchandise, request.number, stock, request.departure)) {
 			props.fireError("Le nomber que vous avez choisi est hors stock");
 			return false;
 		} else {
@@ -70,11 +71,22 @@ export function TransferFruitsDialog(props) {
 		onClickCloseDialog()
 	};
 
-	const handleTransfer = () => {
+	const handleTransfer = (event) => {
+		event.preventDefault();
+		console.log(transferRequest);
 		if (transferIsConfirmed(transferRequest, stock)) {
-			onClickCloseDialog();
-			console.log(transferRequest);
+			TransferMerchandiseService(transferRequest)
+				.then(response => {
+					console.log(response);
+					props.fireSuccess("Le transfert a été effectué avec succès");
+					onClickCloseDialog();
+					window.location.reload();
+				})
+				.catch(err => {
+					props.fireError("échec du transfert, probleme de serveur");
+				})
 		}
+		props.fireError("échec du transfert, peut être un probleme en formulaire");
 	}
 
 
@@ -135,8 +147,8 @@ export function TransferFruitsDialog(props) {
 
 								>
 									{
-										getAppropriateMerchandise(transferRequest.departure, stock) && getAppropriateMerchandise(transferRequest.departure, stock).map((element) => {
-											return <MenuItem value={element}>{element.name}</MenuItem>
+										getAppropriateMerchandise(transferRequest.departure) && getAppropriateMerchandise(transferRequest.departure).map((element) => {
+											return <MenuItem value={element.name}>{element.name}</MenuItem>
 										})
 									}
 
@@ -183,7 +195,7 @@ TransferFruitsDialog.propTypes = {
 
 TransferFruitsDialog.defaultProps = {
 	open: false,
-	onClickCloseDialog : null
+	onClickCloseDialog: null
 };
 
 const mapStateToProps = (state) => state.stock;

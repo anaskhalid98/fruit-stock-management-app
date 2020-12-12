@@ -3,7 +3,7 @@ import {ACCESS_TOKEN} from "../constants";
 
 export const request = (options) => {
 	axios.defaults.headers.common["Content-Type"] =
-		"application/json;charset=UTF-8";
+		"application/json;";
 	if (localStorage.getItem(ACCESS_TOKEN)) {
 		axios.defaults.headers.common["x-access-token"] =
 			 localStorage.getItem(ACCESS_TOKEN);

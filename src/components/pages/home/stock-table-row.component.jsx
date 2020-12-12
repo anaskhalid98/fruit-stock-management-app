@@ -59,7 +59,7 @@ export default function StockTableRow(props) {
 						<Box margin={1}>
 							<Typography variant={"h5"}>
 								<Box fontWeight="fontWeightBold">
-									🍍 Stock par Fruit:
+									🍍 Stock des fruits:
 								</Box>
 							</Typography>
 							<Table style={{backgroundColor: "#f1f1f1"}} size="small" aria-label="purchases">

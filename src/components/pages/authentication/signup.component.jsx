@@ -72,30 +72,19 @@ export function SignUp(props) {
 				</Typography>
 				<form className={classes.form} noValidate>
 					<Grid container spacing={2}>
-						<Grid item xs={12} sm={6}>
+						<Grid item xs={12} >
 							<TextField
-								name="Prenom"
+								name="username"
 								variant="outlined"
 								required
 								fullWidth
-								id="prenom"
-								label="Prenom"
+								id="username"
+								label="Nom d'utilisateur"
 								autoFocus
 								autoComplete="fname"
 								value={signupData.username}
 								onChange={handleChange("username")}
 
-							/>
-						</Grid>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="nom"
-								label="Nom"
-								name="nom"
-								autoComplete="lname"
 							/>
 						</Grid>
 						<Grid item xs={12}>
