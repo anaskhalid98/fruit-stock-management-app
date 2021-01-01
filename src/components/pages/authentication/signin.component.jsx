@@ -14,7 +14,16 @@ import { connect } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
 
-
+/**
+ * Component for signIn to the application
+ *
+ * @component
+ * @example
+ * const text = 'some example text'
+ * return (
+ *   <Documented text={text} />
+ * )
+ */
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
