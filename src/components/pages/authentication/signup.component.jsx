@@ -51,7 +51,7 @@ export function SignUp(props) {
 	const onSubmit = (event) => {
 		event.preventDefault();
 		console.log("Data:", signupData);
-		console.dir("state:",props.authentication);
+		console.dir("state:", props.authentication);
 		props.signUpAction({signupData, history})
 			.then(response => {
 				props.fireSuccess("Vous êtes inscrit avec succès")
@@ -72,7 +72,7 @@ export function SignUp(props) {
 				</Typography>
 				<form className={classes.form} noValidate>
 					<Grid container spacing={2}>
-						<Grid item xs={12} >
+						<Grid item xs={12}>
 							<TextField
 								name="username"
 								variant="outlined"
@@ -138,7 +138,10 @@ export function SignUp(props) {
 	);
 }
 
-const mapStateToProps = (state) => state.authentication;
+const mapStateToProps = (state) => ({
+	authentication: state.authentication
+})
+
 export default connect(mapStateToProps, {
 	signUpAction,
 	fireSuccess,

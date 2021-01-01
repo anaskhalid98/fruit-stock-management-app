@@ -141,7 +141,9 @@ export function SignIn(props) {
 	}
 }
 
-const mapStateToProps = (state) => state.authentication;
+const mapStateToProps = (state) => ({
+	authentication: state.authentication
+})
 export default connect(mapStateToProps, {
 	localAuthenticationAction,
 	fireSuccess,
