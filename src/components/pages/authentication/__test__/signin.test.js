@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import Enzyme, { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import configureStore from 'redux-mock-store';
-import SignIn from "../../components/pages/authentication/signin.component";
+import SignIn from "../signin.component";
 
 Enzyme.configure({ adapter: new Adapter() });
 
