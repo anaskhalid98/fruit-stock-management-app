@@ -20,18 +20,19 @@ import StockTableRowSkeleton from "../../utils/skeleton/stock-table-row-skeleton
 
 
 export function StockTable(props) {
+	const {setStockAction, fireError, stock} = props;
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	React.useEffect(() => {
 		getUserStock()
 			.then(response => {
 				setIsLoading(false);
-				props.setStockAction(response.data);
+				setStockAction(response.data);
 
 
 			})
 			.catch(error => {
-				props.fireError("Un erreur lors de chargement des données")
+				fireError("Un erreur lors de chargement des données")
 			})
 	}, [])
 
@@ -71,7 +72,7 @@ export function StockTable(props) {
 								?
 								<StockTableRowSkeleton/>
 								:
-								props.stock && props.stock.map((row) => (
+								stock && stock.map((row) => (
 									<StockTableRow key={row._id} row={row}/>
 								))
 						}
